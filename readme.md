@@ -47,13 +47,11 @@
 
   - Make sure keychaing is active `vi ~/.ssh/config`
 
-  ***
-
-  Host \*  
-   &nbsp; &nbsp; AddKeysToAgent yes  
-   &nbsp; &nbsp; UseKeychain yes
-
-  ***
+  ```bash
+    Host \*
+     &nbsp; &nbsp; AddKeysToAgent yes
+     &nbsp; &nbsp; UseKeychain yes
+  ```
 
   - add private key to keychain: `ssh-add -K ~/.ssh/digital-ocean`
   - we can ssh to the host: `ssh user@ip-address`
@@ -214,7 +212,7 @@ if we want to redirect ltscodes.com/help to https://developer.mozilla.org/en-US/
 We can create subdomains which is basically a seperate server on it's own. The subdomains will need to run their own
 apps. For example if we need to add a subdomain test to ltscode.com we should add the following to the `default`.
 
-```
+```bash
   server {
     listen 80;
     listen[::]80; # IPV6 notation
