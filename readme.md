@@ -130,7 +130,7 @@ Everytime we restart the server it will kill the node app. We can use process ma
 - generate key `ssh-keygen -t ed25519 -C "levantsu@gmail.com"`
   - it will ask to which file we want to save it to
   - if newer ed25519 standard is not supported use rsa: `ssh-keygen -t rsa -b 4096 -C levantsu@gmail.com`
-- start ssh agent: `sudo eval "$(ssh-agent -s)"`
+- start ssh agent: `sudo -s eval "$(ssh-agent -s)"`
 - add private ssh key to the ssh agent (assuming that your filename is github) `ssh-add ~/.ssh/github`
 - add the public key to github
 - add user.email and user.name to the global git config locally
