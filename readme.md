@@ -1,7 +1,7 @@
 # VIM basic tips
 
 - start vim with `vi` + optional fileName
-- has three modes useing the following keys to access them:
+- has three modes using the following keys to access them:
   - `i` - insert mode (text editing)
   - `ESC` - command mode (Primary mode)
   - `:` - last line mode (searching, saving exiting)
@@ -10,7 +10,7 @@
   - `:wq` - save and exit
   - `:q` - exit VIM
 - to delete line, push `ESC` and type:
-  - `dd` - delete line recardless of the cursor position
+  - `dd` - delete line regardless of the cursor position
   - `D` - delete all text from the cursor position to the end of the line
   - `dl` - delete all text from the current position to the end of the screen
 
@@ -31,7 +31,7 @@
 # SSH setup
 
 - Secure Shell (ssh): a network protocol that gives users a secure way to access a computer over an unsecured network.
-- Generate public and private keys, keep privat on your machine and public on the host.
+- Generate public and private keys, keep private on your machine and public on the host.
 
   1. move to .ssh folder amd create a public/private key pair: `cd ~/.ssh && ssh-keygen -f digital-ocean`
   2. enter the requested info
@@ -40,17 +40,19 @@
 
      - when you ssh first time it will say that no private key was matched among the known hosts, type `yes`
 
-  5. next you can assosiate the private key with the host: `ssh -i digital-ocean root@164.90.176.198`
-     (digital-okean is the file that holds the private key )
+  5. next you can associate the private key with the host: `ssh -i digital-ocean root@164.90.176.198`
+     (digital-ocean is the file that holds the private key )
 
 - add the private key is added to the keychain
 
-  - Make sure keychaing is active `vi ~/.ssh/config`
+  - Make sure keychain is active `vi ~/.ssh/config`
 
   ```bash
-    Host \*
-     &nbsp; &nbsp; AddKeysToAgent yes
-     &nbsp; &nbsp; UseKeychain yes
+
+    Host *
+      AddKeysToAgent yes
+      UseKeychain yes
+
   ```
 
   - add private key to keychain: `ssh-add -K ~/.ssh/digital-ocean`
@@ -68,9 +70,9 @@
   - switch user: `su levan`
   - check sudo access: `sudo cat /var/log/auth.log`
 
-- set user persmission
+- set user permission
 
-  - swith to user: `su levan`
+  - switch to user: `su levan`
   - Create a new .ssh dir if it doesn't exist: `mkdir -p ~/.ssh`
   - create authorized_keys file and paste public key `vi ~/.ssh/authorized_keys`
 
@@ -83,9 +85,9 @@
 
 # Web Server: Nginx
 
-Nginx is a web server that can also be used as a reverse proxy, load balancer, mail proxy and HTTP cache. Very light wait
-and extremly fast. A server without web server dosn't really do much, it doesn't even respond to requests. One of the
-tasks of Nginx is to route requests to where they belong (be that, app, database or even another server).
+Nginx is a web server that can also be used as a reverse proxy, load balancer, mail proxy and HTTP cache. Very light
+wait and extremely fast. A server without web server doesn't really do much, it doesn't even respond to requests. One
+of the tasks of Nginx is to route requests to where they belong (be that, app, database or even another server).
 
 - install nginx: `sudo apt install nginx`
 - start nginx: `sudo service nginx start`
@@ -98,27 +100,34 @@ We can use nginx to run node apps
 
 - install node and npm: `sudo apt install nodejs npm`
 - install git: `sudo apt install git`
-- change onwership of the www directory to the current user: `sudo chown -R $USER:$USER /var/www`
+- change ownership of the www directory to the current user: `sudo chown -R $USER:$USER /var/www`
 - create app directory: `mkdir /var/www/app`
 - initialize empty git repo: `cd /var/www/app && git init`
 - by default nginx is set to port `80`, you can change this:
 
   - edit default:  
     `sudo vi /etc/nginx/sites-available/default`
-  - set  
-    `location / {}`  
-    to:  
-    `location / { proxy_pass http://127.0.0.1:3000/ };`
+  - set
+
+```bash
+
+server_name ltscode.com www.ltscode.com;
+
+location / {
+  proxy_pass http://127.0.0.1:3000/;
+}
+
+```
 
 - restart nginx: `sudo service nginx reload`
 - update node
-  - downlaod setup script from nodesource: `curl -sL https://deb.nodesource.com/setup_14.x -o nodesource_setup.sh`
+  - download setup script from nodesource: `curl -sL https://deb.nodesource.com/setup_14.x -o nodesource_setup.sh`
   - run script: `sudo bash nodesource_setup.sh`
   - instal node: `sudo apt install nodejs`
 
 ## Process Manager: pm2
 
-Everytime we restart the server it will kill the node app. We can use process manager to start process on startup. It keeps an app running. It handles errors, logging, restarts, clustering, etc. `pm2` is one of such managers.
+Every time we restart the server it will kill the node app. We can use process manager to start process on startup. It keeps an app running. It handles errors, logging, restarts, clustering, etc. `pm2` is one of such managers.
 
 - install PM2 globally: `sudo npm i -g pm2`
 - start PM2 `pm2 start /var/www/app/app.js`
@@ -142,13 +151,18 @@ Everytime we restart the server it will kill the node app. We can use process ma
 
 ## commands
 
-- `ping`: followed by url or ip adderess will continuesly ping the address
+- `ping`: followed by url or ip address will continuously ping the address
 - `traceroute`: followed by domain or by ip address, shows the whole chain used to reach the website
-- `-v`: gives more info about the command call, ised for debugging, e.g. (`ssh root@164.90.176.198 -v`)
+- `-v`: gives more info about the command call, used for debugging, e.g. (`ssh root@164.90.176.198 -v`)
 - `dig`: fetches records about the domain, e.g. (`dig lts.codes`)
 - `sudo !!`: run last used command with sudo rights
 - `ps`: show running process
 - `ps aux`: will also show background processes
+- `htop`: will show run an show what's happening on the server. What processes are running, what's the cpu, memory usage,
+  and so on (by default we have `top` which is not as user friendly as `htop`. If the latter is not installed use
+  `sudo apt install htop`).
+- `sudo lsof -i :<port>`: find out the process that is running on the specific port
+- `kill -9 <pid>`: kill the process with the specific id
 
 ## chaining commands
 
@@ -168,7 +182,7 @@ Everytime we restart the server it will kill the node app. We can use process ma
 
 ### redirection
 
-We can take the output of a coomand and do something with it. For example we can:
+We can take the output of a command and do something with it. For example we can:
 
 - check the running processes with `ps` and filter the stdout with `grep`
   - `ps | grep bash`
@@ -195,11 +209,11 @@ We can take the output of a coomand and do something with it. For example we can
 - search file content: `grep -<option> "<search expression>" <dir>`
 - search inside gzip file: `zgrep -<option> "<search expression>" <dir>`
 
-# Nginx Config pasics
+# Nginx Config basics
 
 ## Nginx Redirect
 
-Just as in Express we can do redirect with Nginx. This redirect will happend even before we reach our app. For example
+Just as in Express we can do redirect with Nginx. This redirect will happened even before we reach our app. For example
 if we want to redirect ltscodes.com/help to https://developer.mozilla.org/en-US/ we should do the following:
 
 - `sudo vi /etc/nginx/sites-available/default`
@@ -209,10 +223,11 @@ if we want to redirect ltscodes.com/help to https://developer.mozilla.org/en-US/
 
 ## Nginx Subdomain
 
-We can create subdomains which is basically a seperate server on it's own. The subdomains will need to run their own
+We can create subdomains which is basically a separate server on it's own. The subdomains will need to run their own
 apps. For example if we need to add a subdomain test to ltscode.com we should add the following to the `default`.
 
 ```bash
+
   server {
     listen 80;
     listen[::]80; # IPV6 notation
@@ -220,9 +235,10 @@ apps. For example if we need to add a subdomain test to ltscode.com we should ad
     server_name test.ltscode.com;
 
     location / {
-      proxy_pass http://localhost:3000
+      proxy_pass http://localhost:3000;
     }
   }
+
 ```
 
 ## Nginx File Compression
@@ -261,7 +277,7 @@ block specific traffic based ona defined set of security rules.
 
 Communication endpoint that maps to a specific process or network service. Ports are usually standardized and associated
 to certain processes, e.g. port 80 is a usual nginx, port 22 is ssh, port 21 is ftp, etc. We should
-keep unused ports closed to decrease valnurabilities and expose as little as possible.
+keep unused ports closed to decrease vulnerabilities and expose as little as possible.
 
 #### UFW - uncomplicated firewall
 
@@ -282,7 +298,7 @@ close that file.
 
 # HTTP
 
-## Headers
+### Headers
 
 Header is a metadata that comes with every request and response. For example, some of the most common request headers:
 
@@ -291,11 +307,11 @@ Header is a metadata that comes with every request and response. For example, so
 - Accept-language: browser language
 - Content-type: the type of media
 - Set-cookie: Set stateful information
-- X-: typucally used for custom headers
+- X-: typically used for custom headers
 
-## Status codes
+### Status codes
 
-Status code indicates the status of an HTTP request. First number always indicates to the type of the statis
+Status code indicates the status of an HTTP request. First number always indicates to the type of the status
 
 | Code |     Type     |
 | ---: | :----------: |
@@ -304,3 +320,48 @@ Status code indicates the status of an HTTP request. First number always indicat
 |  3xx |   Redirect   |
 |  4xx | Client Error |
 |  5xx | Server Error |
+
+## HTTPS
+
+Encrypts all the data transit and guarantees that we are talking to the server that we are trying to reach. We can use
+[Certbot](https://certbot.eff.org/) for the quick encryption.
+
+- very simple setup instructions are available on their webpage
+
+## HTTP/2
+
+http1.1 every single request creates tcp connection and has its own thread, ie request/response handshake. Every single
+resource I need will need an individual handshake. In turn, with http2 we can multiplex, we can make one connection
+and send multiple requests over a larger pipe.
+
+- configuring the HTTP/2 in nginx
+
+  - open configuration file: `sudo vi /etc/nginx/sites-available/default`
+  - find the line `listen 443 ssl` and the line starting with `listen [::]:443 ssl ...` and add http2 in them:
+
+  ```bash
+
+  listen 443 ssl http2;
+  listen [::]:443 ssl http2 ...
+
+  ```
+
+## HTTP/3
+
+The difference between 3 and older http versions is that the older versions run TCP connection, whilst http/3 runs on
+faster "Quick UDP" internet connections. It gives us over 20-30% increase over the http/2. Adoption was very slow but it
+should be fine now.
+
+# Containers Basics
+
+...
+
+## Load Balancer
+
+Makes sure that the traffic is split evenly across the servers. Nginx can do this for us the info is available
+[here](https://docs.nginx.com/nginx/admin-guide/load-balancer/http-load-balancer/)
+
+## Deployment
+
+This can be a burden if we are not using orchestration, because we have to do all the above manually. But we can write
+scripts for this and use tools like Ansible, Puppet, and Vagrant
